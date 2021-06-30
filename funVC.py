@@ -1,10 +1,9 @@
-import pyautogui as pd
+from pyautogui import position as pd
+from pyautogui import moveTo as mt
+import win32api as win
 perc_x = .1;
 perc_y=.1;
-
-
-def fybVC():
-    return 1
+dt=3; # velocidade com que o cursor vai andar.
 
 
 def verifica_direcao(pontoInteresse, origem):
@@ -13,37 +12,31 @@ def verifica_direcao(pontoInteresse, origem):
    # print("Pontos x: "+ str (x_ponto) +" | y: "+ str (y_ponto) )
     if((x_ponto > 0 and y_ponto > 0) or (x_ponto > 0 and y_ponto >= 0) or (x_ponto >= 0 and y_ponto > 0) ):
         #return "Quadrante 1"
-        print("Quadrante 1")
-        return [100,100]
+     #   print("Quadrante 1")
+        return [dt,dt]
     if((x_ponto < 0 and y_ponto > 0) or (x_ponto < 0 and y_ponto >= 0) or (x_ponto <= 0 and y_ponto > 0)  ):
        # return "Quadrante 2"
-        print("Quadrante 2")
-        return [-100,100]
+       # print("Quadrante 2")
+        return [-dt,dt]
     if((x_ponto < 0 and y_ponto < 0) or (x_ponto < 0 and y_ponto <= 0) or (x_ponto <= 0 and y_ponto < 0) ):
        # return "Quadrante 3"  
-        print("Quadrante 3") 
-        return [-100,-100]    
+     #   print("Quadrante 3") 
+        return [-dt,-dt]    
     if((x_ponto > 0 and y_ponto < 0)) or (x_ponto > 0 and y_ponto <= 0) or (x_ponto >= 0 and y_ponto < 0):
       #  return "Quadrante 4"
-        print("Quadrante 4")
-        return[100,-100]
+       # print("Quadrante 4")
+        return[dt,-dt]
     if(x_ponto == 0 and y_ponto ==0):
-        print("Origem!!")
+     #   print("Origem!!")
+        return[0,0]
     
 
-def  atuaMouse(posicaoNova ):
-    passox,passoy= DefineTaxaMouse()
-    posicao_x, posicao_y=pd.position()
-    # define versor. 
+def  atuaMouse(posicaoNova):
+    posicao_x, posicao_y=pd()
+    #
+    posicao_x, posicao_y = win.GetCursorPos()
+    # define vetor. 
     posicaoNova[0]=(posicao_x+posicaoNova[0])
     posicaoNova[1]= (posicao_y+posicaoNova[1])
-    pd.moveTo(posicaoNova[0],posicaoNova[1],duration=1)
-
-
-def DefineTaxaMouse():
-    # infos da camera. 
-    x_screen, y_screen = pd.size()
-    passo_x=x_screen*perc_x;
-    passo_y=y_screen*perc_y;
-    print("passo x: " +str (passo_x) + " passo y: " + str(passo_y))
-    return (passo_x, passo_y)
+    win.SetCursorPos((posicaoNova[0],posicaoNova[1]))
+   # mt(posicaoNova[0],posicaoNova[1])
