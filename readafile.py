@@ -1,9 +1,11 @@
 import cv2
 import funVC as fvc
 import numpy as np
-video=cv2.VideoCapture('videos/v8.mp4')   
+video=cv2.VideoCapture('videos/v1.mp4')   
 #video=cv2.VideoCapture(0) 
 calibracao= False;
+ponto_interesse=[0,0]
+origem=[0,0]
 # definicao da projecao da visao. 
     #roi = frame[260:795, 537:1400]
 kernel = np.ones((5, 5), np.uint8)
@@ -46,11 +48,12 @@ while True:
             calibracao =True
         cv2.line(frame,(x_calib_0,0),(x_calib_0,rows),(123,123,123),2)
         cv2.line(frame,(0,y_calib_0),(cols,y_calib_0),(123,123,123),2)
-    
+        fvc.atuaMouse(fvc.verifica_direcao(ponto_interesse,origem))
         #liga a origem do sistema ao ponto do olho
         cv2.line(frame,(x_calib_0,y_calib_0),(x+int(w/2),y+int(h/2)),(0,0,255),2)
-        ponto_interesse = [x+int(w/2),( y+int(h/2))]
-        fvc.atuaMouse(fvc.verifica_direcao(ponto_interesse,origem))
+        ponto_interesse = [x+int(w/2), y+int(h/2)]
+      #  fvc.atuaMouse(fvc.verifica_direcao(ponto_interesse,origem))
+ 
       #  print("Ponto de interesse: " + str(ponto_interesse))
       #  print("Origem: "+ str(origem))
       #  print("------------")
