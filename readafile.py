@@ -1,11 +1,9 @@
 import cv2
 import funVC as fvc
 import numpy as np
-video=cv2.VideoCapture('videos/v2.mp4')   
-#video=cv2.VideoCapture(0) 
+#video=cv2.VideoCapture('videos/v1.mp4')   
+video=cv2.VideoCapture(0) 
 calibracao= False;
-ponto_interesse=[0,0]
-origem=[0,0]
 # definicao da projecao da visao. 
     #roi = frame[260:795, 537:1400]
 kernel = np.ones((5, 5), np.uint8)
@@ -16,7 +14,7 @@ while True:
     rows,cols,_=frame.shape
     img_gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
    # cv2.line(frame,(0,int(rows/2)),(cols,int(rows/2)),(123,123,123),2)
-  #  cv2.line(frame,(int(cols/2),0),(int(cols/2),rows),(123,123,123),2)
+   #  cv2.line(frame,(int(cols/2),0),(int(cols/2),rows),(123,123,123),2)
     #img_gray=sobel(img_gray)
     
     
@@ -34,6 +32,7 @@ while True:
     contours=sorted(contours,key=lambda x:cv2.contourArea(x),reverse=True) # pegamos o maior contorno e usamos como referenica.
 
     for ctr in contours:
+      
         (x,y,w,h)= cv2.boundingRect(ctr) # geramos um retangulo 
         #cv2.drawContours(frame,[ctr],-1,(0,0,255),3)
         cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
@@ -58,8 +57,7 @@ while True:
       #  print("Ponto de interesse: " + str(ponto_interesse))
       #  print("Origem: "+ str(origem))
       #  print("------------")
-        break
-
+        break  
     if ret ==True:
         cv2.imshow('Frame',frame)
 
