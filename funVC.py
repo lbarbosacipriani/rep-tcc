@@ -1,5 +1,5 @@
-from pyautogui import position as pd
-from pyautogui import moveTo as mt
+#from pyautogui import position as pd
+#from pyautogui import moveTo as mt
 import win32api as win
 perc_x = .1;
 perc_y=.1;
@@ -32,7 +32,7 @@ def verifica_direcao(pontoInteresse, origem):
     
 
 def  atuaMouse(posicaoNova):
-    posicao_x, posicao_y=pd()
+    #posicao_x, posicao_y=pd()
     #
     posicao_x, posicao_y = win.GetCursorPos()
     # define vetor. 
@@ -40,3 +40,9 @@ def  atuaMouse(posicaoNova):
     posicaoNova[1]= (posicao_y+posicaoNova[1])
     win.SetCursorPos((posicaoNova[0],posicaoNova[1]))
    # mt(posicaoNova[0],posicaoNova[1])
+
+def defineOrigem(x,y,w,h):
+    #funcao para definir nova origem do sistema. 
+        x_calib_0=x+int(w/2)
+        y_calib_0=y+int(h/2)
+        return [x_calib_0,y_calib_0]
