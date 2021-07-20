@@ -10,7 +10,10 @@ kernel = np.ones((5, 5), np.uint8)
 #video=cv2.VideoCapture(0)
 while True:
     ret, frame=video.read()
-    #roi = frame[260:795, 537:1400]
+    frame = cv2.rotate(frame,cv2.ROTATE_90_CLOCKWISE)
+    roi=frame[60:280, 100:300]
+    frame=roi
+   
     rows,cols,_=frame.shape
     img_gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
    # cv2.line(frame,(0,int(rows/2)),(cols,int(rows/2)),(123,123,123),2)
@@ -24,7 +27,7 @@ while True:
     img_gray=cv2.GaussianBlur(img_gray,(9,9),0)
 
     # tratamos os limiares da imagem. 
-    _, threshold=cv2.threshold(img_gray,0,256,cv2.THRESH_BINARY_INV)
+    _, threshold=cv2.threshold(img_gray,0,200,cv2.THRESH_BINARY_INV)
     #threshold = cv2.adaptiveThreshold(img_gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
      #      cv2.THRESH_BINARY,11,2)
     contours, hierarchy  = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -42,15 +45,16 @@ while True:
         if(calibracao==False):
             #definir funcao de calibracao por tempo. 
             [x_calib_0,y_calib_0]=fvc.defineOrigem(x,y,w,h)
+            origem=[x_calib_0,y_calib_0]
             calibracao =True
         cv2.line(frame,(x_calib_0,0),(x_calib_0,rows),(123,123,123),2)
         cv2.line(frame,(0,y_calib_0),(cols,y_calib_0),(123,123,123),2)
-       
         #liga a origem do sistema ao ponto do olho
         cv2.line(frame,(x_calib_0,y_calib_0),(x+int(w/2),y+int(h/2)),(0,0,255),2)
         ponto_interesse = [x+int(w/2), y+int(h/2)]
       #  print(fvc.verifica_direcao(ponto_interesse,origem))
-        fvc.atuaMouse(fvc.verifica_direcao(ponto_interesse,[x_calib_0,y_calib_0]))
+        direcao=fvc.verifica_direcao(ponto_interesse,origem)
+        fvc.atuaMouse(direcao,origem,ponto_interesse)
       #  fvc.atuaMouse(fvc.verifica_direcao(ponto_interesse,origem))
       #  print("Ponto de interesse: " + str(ponto_interesse))
       #  print("Origem: "+ str(origem))
