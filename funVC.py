@@ -4,13 +4,14 @@ import win32api as win
 import math
 perc_x = .1;
 perc_y=.1;
-LimiteDist=15
+LimiteDist=10
 dt=10; # velocidade com que o cursor vai andar.
 
 
 def verifica_direcao(pontoInteresse, origem):
     x_ponto=float (pontoInteresse[0]- origem[0])
     y_ponto=float (pontoInteresse[1]- origem[1])
+    distancia=pow((pow(x_ponto,2) + pow(y_ponto,2)),1/2)
        # print("Pontos x: "+ str (x_ponto) +" | y: "+ str (y_ponto) )
     if(x_ponto == 0 and y_ponto ==0 or x_ponto==0) or y_ponto==0:
      #   print("Origem!!")
@@ -18,13 +19,13 @@ def verifica_direcao(pontoInteresse, origem):
     else:
         theta=math.atan(y_ponto/x_ponto)
         if(x_ponto <0 and y_ponto <0):
-            return [-dt*math.cos(theta), -dt*math.sin(theta)]
+            return [(x_ponto-dt*math.cos(theta))/distancia, (y_ponto-dt*math.sin(theta))//distancia]
         if(x_ponto >0 and y_ponto <0):
-            return [dt*math.cos(theta), -dt*math.sin(theta)]
+            return [(x_ponto+dt*math.cos(theta))/distancia,(y_ponto -dt*math.sin(theta))/distancia]
         if(x_ponto <0 and y_ponto >0):
-            return [-dt*math.cos(theta), dt*math.sin(theta)]
+            return [(x_ponto-dt*math.cos(theta))/distancia, (y_ponto+dt*math.sin(theta))/distancia]
         if(x_ponto >0 and y_ponto >0):
-            return [dt*math.cos(theta), dt*math.sin(theta)]
+            return [(x_ponto+dt*math.cos(theta))/distancia,(y_ponto+ dt*math.sin(theta))/distancia]
 
 
 def  atuaMouse(direcao,origem,pontoInteresse):

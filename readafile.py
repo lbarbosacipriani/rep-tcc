@@ -7,32 +7,48 @@ calibracao= False;
 # definicao da projecao da visao. 
     #roi = frame[260:795, 537:1400]
 kernel = np.ones((5, 5), np.uint8)
-#video=cv2.VideoCapture(0)
-while True:
-    ret, frame=video.read()
-    frame = cv2.rotate(frame,cv2.ROTATE_90_CLOCKWISE)
-    roi=frame[60:280, 100:300]
-    frame=roi
+font = cv2.FONT_HERSHEY_SIMPLEX
+
+org = (50, 50)
+  
+# fontScale
+fontScale = 0.5
    
+# Blue color in BGR
+color = (0, 255, 0)
+  
+# Line thickness of 2 px
+thickness = 2
+#video=cv2.VideoCapture(0)
+ret, frame=video.read()
+while frame.any() != None: 
+    
+   # frame = cv2.rotate(frame,cv2.ROTATE_90_CLOCKWISE)
+    roi=frame[60:280, 100:300]
+    #ROI para o video gravado; 
+    roi=frame[250:500, 40:300]
+   
+   #filtro passa baixa:
+    frame=  np.array(roi)
     rows,cols,_=frame.shape
     img_gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
    # cv2.line(frame,(0,int(rows/2)),(cols,int(rows/2)),(123,123,123),2)
    #  cv2.line(frame,(int(cols/2),0),(int(cols/2),rows),(123,123,123),2)
     #img_gray=sobel(img_gray)
     
-    
+    img_gray= cv2.blur(img_gray,(11,11)) # blur para diminuir frequencias zuadas.
     img_gray =cv2.equalizeHist(img_gray)
-    img_gray=cv2.erode(img_gray,kernel)
+   #  img_gray=cv2.erode(img_gray,kernel)
 
     img_gray=cv2.GaussianBlur(img_gray,(9,9),0)
-
+    
     # tratamos os limiares da imagem. 
     _, threshold=cv2.threshold(img_gray,0,200,cv2.THRESH_BINARY_INV)
     #threshold = cv2.adaptiveThreshold(img_gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
      #      cv2.THRESH_BINARY,11,2)
     contours, hierarchy  = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    contours=sorted(contours,key=lambda x:cv2.contourArea(x),reverse=True) # pegamos o maior contorno e usamos como referenica.
+    contours=sorted(contours,key=lambda x:cv2.contourArea(x),reverse=True) # pegamos o maior contorno e usamos como referencia.
 
     for ctr in contours:
       
@@ -50,8 +66,10 @@ while True:
         cv2.line(frame,(x_calib_0,0),(x_calib_0,rows),(123,123,123),2)
         cv2.line(frame,(0,y_calib_0),(cols,y_calib_0),(123,123,123),2)
         #liga a origem do sistema ao ponto do olho
+        cv2.putText(frame, ' F_0', origem, font, fontScale, color, thickness, cv2.LINE_AA)
         cv2.line(frame,(x_calib_0,y_calib_0),(x+int(w/2),y+int(h/2)),(0,0,255),2)
         ponto_interesse = [x+int(w/2), y+int(h/2)]
+        cv2.putText(frame, ' F_1', ponto_interesse, font, fontScale, (0, 255, 255), thickness, cv2.LINE_AA)
       #  print(fvc.verifica_direcao(ponto_interesse,origem))
         direcao=fvc.verifica_direcao(ponto_interesse,origem)
         fvc.atuaMouse(direcao,origem,ponto_interesse)
@@ -68,6 +86,7 @@ while True:
     if cv2.waitKey(5) & 0xFF == ord(' '):
       [x_calib_0,y_calib_0]=fvc.defineOrigem(x,y,w,h)
       calibracao = False
+    ret, frame=video.read()
 
 cv2.destroyAllWindows()
 
