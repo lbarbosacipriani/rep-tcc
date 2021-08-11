@@ -2,30 +2,33 @@
 #from pyautogui import moveTo as mt
 import win32api as win
 import math
+import numpy as np
+import matplotlib.pyplot as mp
 perc_x = .1;
 perc_y=.1;
 LimiteDist=10
-dt=10; # velocidade com que o cursor vai andar.
-
-
+dt=60; # velocidade com que o cursor vai andar.
+eixo_x = []
+eixo_y=[]
+atuador=[0,0]
 def verifica_direcao(pontoInteresse, origem):
     x_ponto=float (pontoInteresse[0]- origem[0])
     y_ponto=float (pontoInteresse[1]- origem[1])
+    print("x_pomto: " + str(x_ponto))
     distancia=pow((pow(x_ponto,2) + pow(y_ponto,2)),1/2)
        # print("Pontos x: "+ str (x_ponto) +" | y: "+ str (y_ponto) )
-    if(x_ponto == 0 and y_ponto ==0 or x_ponto==0) or y_ponto==0:
+    if(x_ponto*y_ponto==0):
      #   print("Origem!!")
         return[0, 0]
     else:
-        theta=math.atan(y_ponto/x_ponto)
-        if(x_ponto <0 and y_ponto <0):
-            return [(x_ponto-dt*math.cos(theta))/distancia, (y_ponto-dt*math.sin(theta))//distancia]
-        if(x_ponto >0 and y_ponto <0):
-            return [(x_ponto+dt*math.cos(theta))/distancia,(y_ponto -dt*math.sin(theta))/distancia]
-        if(x_ponto <0 and y_ponto >0):
-            return [(x_ponto-dt*math.cos(theta))/distancia, (y_ponto+dt*math.sin(theta))/distancia]
-        if(x_ponto >0 and y_ponto >0):
-            return [(x_ponto+dt*math.cos(theta))/distancia,(y_ponto+ dt*math.sin(theta))/distancia]
+        
+        if(x_ponto<0):
+          theta=math.atan(-y_ponto/x_ponto)
+          return [(x_ponto-dt*math.cos(theta))/distancia,(y_ponto+ dt*math.sin(theta))/distancia]
+        else:
+          theta=math.atan(y_ponto/x_ponto)
+          return [(x_ponto+dt*math.cos(theta))/distancia,(y_ponto+ dt*math.sin(theta))/distancia]
+    
 
 
 def  atuaMouse(direcao,origem,pontoInteresse):
@@ -34,9 +37,10 @@ def  atuaMouse(direcao,origem,pontoInteresse):
     if(raioMinimo(origem,pontoInteresse)):
         posicao_x, posicao_y = win.GetCursorPos()
     # define vetor. 
-        direcao[0]=(posicao_x+direcao[0])
-        direcao[1]= (posicao_y+direcao[1])
-        win.SetCursorPos([int(direcao[0]), int(direcao[1])])
+        atuador[0]=(posicao_x+direcao[0])
+        atuador[1]= (posicao_y+direcao[1])
+        tracking(pontoInteresse)
+        win.SetCursorPos([int(atuador[0]), int(atuador[1])])
     else:
         print("Mantem posicao")
    # mt(posicaoNova[0],posicaoNova[1])
@@ -61,3 +65,12 @@ def raioMinimo(origem,pontoInteresse):
     else:
         return False
  
+
+def tracking(pontoInteresse):
+    eixo_x.append(pontoInteresse[0])
+    eixo_y.append(pontoInteresse[1])
+
+
+def plot_cursor():
+    mp.plot(eixo_x, eixo_y,'r')
+    mp.show()
