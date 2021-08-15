@@ -74,3 +74,11 @@ def tracking(pontoInteresse):
 def plot_cursor():
     mp.plot(eixo_x, eixo_y,'r')
     mp.show()
+
+
+    
+def defineOrigem1(x,y):
+    #funcao para definir nova origem do sistema. 
+        x_calib_0=x
+        y_calib_0=y
+        return [x_calib_0,y_calib_0]

@@ -19,7 +19,7 @@ fontScale = 0.5
 color = (0, 255, 0)
 
 # Line thickness of 2 px
-thickness = 2
+thickness = 1
 # video=cv2.VideoCapture(0)
 ret, frame = video.read()
 
@@ -61,18 +61,21 @@ while frame is not None:
 
       for ctr in contours:
             cv2.moments(ctr)  # momentos estatíticos do contorno.
-            (x, y, w, h) = cv2.boundingRect(ctr)  # geramos um retangulo
+            M=cv2.moments(ctr)
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+            #(x, y, w, h) = cv2.boundingRect(ctr)  # geramos um retangulo
             # cv2.drawContours(frame,[ctr],-1,(0,0,255),3)
-            cv2.rectangle(frame,(x,y),(x+w,y+h),(255, 255, 0),1)
-            
+           # cv2.rectangle(frame,(x,y),(x+w,y+h),(255, 255, 0),1)
+            cv2.circle(frame,(cx,cy),10,(255, 255, 0))
             # desenhando o centro do retagngulo:
-            cv2.line(frame, (x+int(w/2), 0),
-                     (x+int(w/2), rows), (205, 68, 239), 1)
-            cv2.line(frame, (0, y+int(h/2)),
-                     (cols, y+int(h/2)), (205, 68, 239), 1)
+            cv2.line(frame, (cx, 0),
+                     (cx, rows), (205, 68, 239), 1)
+            cv2.line(frame, (0, cy),
+                     (cols, cy), (205, 68, 239), 1)
             if(calibracao == False):
                 # definir funcao de calibracao por tempo.
-                [x_calib_0, y_calib_0] = fvc.defineOrigem(x, y, w, h)
+                [x_calib_0, y_calib_0] = fvc.defineOrigem1(cx, cy)
                 origem = [x_calib_0, y_calib_0]
                 calibracao = True
             cv2.line(frame, (x_calib_0, 0),
@@ -84,8 +87,8 @@ while frame is not None:
 
             
             cv2.line(frame, (x_calib_0, y_calib_0),
-                     (x+int(w/2), y+int(h/2)), (68, 239, 233), 2)
-            ponto_interesse = [x+int(w/2), y+int(h/2)]
+                     (cx, cy), (68, 239, 233), 2)
+            ponto_interesse = [cx, cy]
             cv2.putText(frame, ' F_1', (ponto_interesse[0]+2,ponto_interesse[1] -2), font,
                         fontScale, (205, 68, 239), thickness, cv2.LINE_AA)
           #  print(fvc.verifica_direcao(ponto_interesse,origem))
@@ -103,7 +106,7 @@ while frame is not None:
       if cv2.waitKey(5) & 0xFF == ord('q'):
             break
       if cv2.waitKey(5) & 0xFF == ord(' '):
-            [x_calib_0, y_calib_0] = fvc.defineOrigem(x, y, w, h)
+            [x_calib_0, y_calib_0] = fvc.defineOrigem1(cx, cy)
             calibracao = False
       ret, frame = video.read()
       #frame=cv2.flip(frame,1)
