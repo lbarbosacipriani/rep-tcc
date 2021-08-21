@@ -2,14 +2,18 @@
 #from pyautogui import moveTo as mt
 import win32api as win
 import math
-import numpy as np
 import matplotlib.pyplot as mp
+import datetime 
+import pandas as pd
+
 perc_x = .1;
 perc_y=.1;
 LimiteDist=10
-dt=60; # velocidade com que o cursor vai andar.
+dt=129; # velocidade com que o cursor vai andar.
 eixo_x = []
 eixo_y=[]
+
+#saida_posicao_olho=[[],[]]
 atuador=[0,0]
 def verifica_direcao(pontoInteresse, origem):
     x_ponto=float (pontoInteresse[0]- origem[0])
@@ -39,8 +43,10 @@ def  atuaMouse(direcao,origem,pontoInteresse):
     # define vetor. 
         atuador[0]=(posicao_x+direcao[0])
         atuador[1]= (posicao_y+direcao[1])
-        tracking(pontoInteresse)
+
+       
         win.SetCursorPos([int(atuador[0]), int(atuador[1])])
+        tracking([int(atuador[0]), int(atuador[1])])
     else:
         print("Mantem posicao")
    # mt(posicaoNova[0],posicaoNova[1])
@@ -60,15 +66,18 @@ def raioMinimo(origem,pontoInteresse):
     y_raio = pontoInteresse[1] - posicao_y
     distancia=pow((pow(x_raio,2) + pow(y_raio,2)),1/2)
     if(distancia >=LimiteDist):
-        print("Distancia limite: "+ str(distancia))
+     #   print("Distancia limite: "+ str(distancia))
         return True
     else:
         return False
  
 
 def tracking(pontoInteresse):
-    eixo_x.append(pontoInteresse[0])
     eixo_y.append(pontoInteresse[1])
+    eixo_x.append(pontoInteresse[0])
+
+    #print(valores_1)
+    
 
 
 def plot_cursor():

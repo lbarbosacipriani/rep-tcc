@@ -12,7 +12,7 @@ org = (50, 50)
 fontScale = 0.5
    
 # Blue color in BGR
-color = (0, 255, 0)
+color = (0, 255, 255)
   
 # Line thickness of 2 px
 thickness = 1

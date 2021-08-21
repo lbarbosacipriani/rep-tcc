@@ -1,15 +1,23 @@
 import cv2
 import funVC as fvc
 import numpy as np
+import pandas as pd
+import testes_com_erro as test
+import datetime 
+import win32api as win
+
+
 video = cv2.VideoCapture('videos/v2.mp4')
+file_saida= pd.DataFrame()
 #video = cv2.VideoCapture(0)
 calibracao = False
-calibracao_pre = True
+calibracao_pre = True           
 # definicao da projecao da visao.
 # roi = frame[260:795, 537:1400]
 kernel = np.ones((5, 5), np.uint8)
 font = cv2.FONT_HERSHEY_SIMPLEX
-
+redefinir_origem=0
+limite_redefinir_origem=60
 org = (50, 50)
 
 # fontScale
@@ -24,6 +32,7 @@ thickness = 1
 ret, frame = video.read()
 
 # calibracao
+test.gera_imagem()
 
 while frame is not None:
       if cv2.waitKey(5) & 0xFF == ord('r'):
@@ -62,12 +71,18 @@ while frame is not None:
       for ctr in contours:
             cv2.moments(ctr)  # momentos estatíticos do contorno.
             M=cv2.moments(ctr)
-            cx = int(M['m10']/M['m00'])
-            cy = int(M['m01']/M['m00'])
+            if(M['m00'] != 0):
+                  cx = int(M['m10']/M['m00'])
+                  cy = int(M['m01']/M['m00'])
+                  cv2.circle(frame,(cx,cy),10,(255, 255, 0))
+            else:
+                  (x, y, w, h) = cv2.boundingRect(ctr) 
+                  cx=x +int(w/2)
+                  cy=y +int(h/2)
             #(x, y, w, h) = cv2.boundingRect(ctr)  # geramos um retangulo
             # cv2.drawContours(frame,[ctr],-1,(0,0,255),3)
            # cv2.rectangle(frame,(x,y),(x+w,y+h),(255, 255, 0),1)
-            cv2.circle(frame,(cx,cy),10,(255, 255, 0))
+           
             # desenhando o centro do retagngulo:
             cv2.line(frame, (cx, 0),
                      (cx, rows), (205, 68, 239), 1)
@@ -94,23 +109,34 @@ while frame is not None:
           #  print(fvc.verifica_direcao(ponto_interesse,origem))
             direcao = fvc.verifica_direcao(ponto_interesse, origem)
             if calibracao_pre == True:
-                fvc.atuaMouse(direcao, origem, ponto_interesse)
+                  fvc.atuaMouse(direcao, origem, ponto_interesse)
+                #salva a posicao do cursor:
+                  pontoInteresse=win.GetCursorPos()
+                  entrada=pd.DataFrame({'pos_X':[pontoInteresse[0]],'pos_Y':[pontoInteresse[1]]})
+                  file_saida=pd.concat([entrada,file_saida],ignore_index=True )
+                #file_saida.concat(ponto_interesse)
+              #  print(file_saida)
           #  fvc.atuaMouse(fvc.verifica_direcao(ponto_interesse,origem))
           #  print("Ponto de interesse: " + str(ponto_interesse))
           #  print("Origem: "+ str(origem))
           #  print("------------")
             break
+      
       if ret == True:
             cv2.imshow('Frame', frame)
-
+      #salvando arquivo de saída:
       if cv2.waitKey(5) & 0xFF == ord('q'):
             break
-      if cv2.waitKey(5) & 0xFF == ord(' '):
+      if (cv2.waitKey(5) & 0xFF == ord(' '))or redefinir_origem >=limite_redefinir_origem:
             [x_calib_0, y_calib_0] = fvc.defineOrigem1(cx, cy)
             calibracao = False
+            redefinir_origem=0
       ret, frame = video.read()
-      #frame=cv2.flip(frame,1)
-
+      redefinir_origem=redefinir_origem+1
+      frame=cv2.flip(frame,1) 
+#file_saida = fvc.pegaDataframe()
+file_saida.to_csv("files_out" +"\saida_posicao_olho_"+str(datetime.datetime.now().day)+ "_" +str(datetime.datetime.now().hour) + "_"+ str(datetime.datetime.now().minute) + ".txt")
+#file_saida.to_csv("saida_posicao_olho_quadradorrfrf.txt")
 fvc.plot_cursor()
 cv2.destroyAllWindows()
 
