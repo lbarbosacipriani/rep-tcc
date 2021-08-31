@@ -8,11 +8,11 @@ import pandas as pd
 
 perc_x = .1;
 perc_y=.1;
-LimiteDist=10
-dt=129; # velocidade com que o cursor vai andar.
+LimiteDist=8
+dt=.1; # velocidade com que o cursor vai andar.
 eixo_x = []
 eixo_y=[]
-
+r=.1
 #saida_posicao_olho=[[],[]]
 atuador=[0,0]
 def verifica_direcao(pontoInteresse, origem):
@@ -25,13 +25,15 @@ def verifica_direcao(pontoInteresse, origem):
      #   print("Origem!!")
         return[0, 0]
     else:
-        
+        distancia=1
         if(x_ponto<0):
           theta=math.atan(-y_ponto/x_ponto)
-          return [(x_ponto-dt*math.cos(theta))/distancia,(y_ponto+ dt*math.sin(theta))/distancia]
+          #
+          return [ r*(x_ponto-dt*math.cos(theta))/distancia, r*(y_ponto+ dt*math.sin(theta))/distancia]
         else:
+       #   distancia=1
           theta=math.atan(y_ponto/x_ponto)
-          return [(x_ponto+dt*math.cos(theta))/distancia,(y_ponto+ dt*math.sin(theta))/distancia]
+          return [r*(x_ponto+dt*math.cos(theta))/distancia,r*(y_ponto+ dt*math.sin(theta))/distancia]
     
 
 

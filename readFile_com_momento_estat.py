@@ -5,13 +5,15 @@ import pandas as pd
 import testes_com_erro as test
 import datetime 
 import win32api as win
+import matplotlib.pyplot as mp
 
-
-video = cv2.VideoCapture('videos/v2.mp4')
+figura_quadrado=pd.read_csv("files_out/saida_posicao_olho_quadrado.txt",sep=",")
+t=[range(0,len(figura_quadrado))]
+#video = cv2.VideoCapture('videos/v2.mp4')
 file_saida= pd.DataFrame()
-#video = cv2.VideoCapture(0)
+video = cv2.VideoCapture(0)
 calibracao = False
-calibracao_pre = True           
+calibracao_pre = False           
 # definicao da projecao da visao.
 # roi = frame[260:795, 537:1400]
 kernel = np.ones((5, 5), np.uint8)
@@ -132,11 +134,15 @@ while frame is not None:
             calibracao = False
             redefinir_origem=0
       ret, frame = video.read()
-      redefinir_origem=redefinir_origem+1
+     # redefinir_origem=redefinir_origem+1
       frame=cv2.flip(frame,1) 
 #file_saida = fvc.pegaDataframe()
 file_saida.to_csv("files_out" +"\saida_posicao_olho_"+str(datetime.datetime.now().day)+ "_" +str(datetime.datetime.now().hour) + "_"+ str(datetime.datetime.now().minute) + ".txt")
 #file_saida.to_csv("saida_posicao_olho_quadradorrfrf.txt")
+mp.plot(figura_quadrado['pos_X'],figura_quadrado['pos_Y'],'.')
+mp.ylim(1080,0)
+mp.xlim(0,1920)
+mp.grid()
 fvc.plot_cursor()
 cv2.destroyAllWindows()
 
