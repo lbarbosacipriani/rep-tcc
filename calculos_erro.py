@@ -4,7 +4,7 @@ import pandas as pd
 import statistics
 import matplotlib.pyplot as mp
 figura_quadrado=pd.read_csv("files_out/saida_posicao_olho_quadrado.txt",sep=",")
-figura_cursor=pd.read_csv("files_out/saida_posicao_olho_29_19_25.txt",sep=",")
+figura_cursor=pd.read_csv("files_out/saida_posicao_olho_29_18_57.txt",sep=",")
 #figura_cursor=pd.read_csv("files_out/saida_posicao_olho_quadrado.txt",sep=",")
 distancias_x=[]
 figura_cursor=figura_cursor.iloc[::-1]
