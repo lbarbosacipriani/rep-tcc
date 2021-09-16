@@ -9,11 +9,11 @@ import matplotlib.pyplot as mp
 
 figura_quadrado=pd.read_csv("files_out/saida_posicao_olho_quadrado.txt",sep=",")
 t=[range(0,len(figura_quadrado))]
-video = cv2.VideoCapture('videos/v2.mp4')
+#video = cv2.VideoCapture('videos/v2.mp4')
 file_saida= pd.DataFrame()
-#video = cv2.VideoCapture(0)
+video = cv2.VideoCapture(0)
 calibracao = False
-calibracao_pre = True           
+calibracao_pre = False           
 # definicao da projecao da visao.
 # roi = frame[260:795, 537:1400]
 kernel = np.ones((5, 5), np.uint8)

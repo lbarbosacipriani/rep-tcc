@@ -1,17 +1,14 @@
 import cv2
 
-imagem=cv2.imread("../imagens_artigos/lena_original.png")
+imagem=cv2.imread("../imagens_artigos/Frame0_grayscale.png")
 
 
 
 img_gray=cv2.cvtColor(imagem,cv2.COLOR_BGR2GRAY)
-img_gray=cv2.blur(imagem,(7,7))
-cv2.imshow('originalk',img_gray)
-cv2.waitKey()
 
 
+#img_gray=cv2.GaussianBlur(img_gray,(7,7),0)
 
-_, threshold=cv2.threshold(img_gray,190,255,cv2.THRESH_BINARY)#,cv2.THRESH_BINARY,11,2)
-cv2.imshow('originalk',threshold)
-
+img_equalizada=cv2.equalizeHist(img_gray)
+cv2.imshow('originalk',img_equalizada)
 cv2.waitKey()

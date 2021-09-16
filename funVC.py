@@ -12,7 +12,7 @@ LimiteDist=8
 dt=.1; # velocidade com que o cursor vai andar.
 eixo_x = []
 eixo_y=[]
-r=.1
+r=.05
 #saida_posicao_olho=[[],[]]
 atuador=[0,0]
 def verifica_direcao(pontoInteresse, origem):
